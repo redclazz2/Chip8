@@ -294,6 +294,11 @@ void emulate_instruction(sdl_t *sdl,chip8_t *chip8, const config_t *config){
             }
             break;
 
+        case 0x01:
+            printf("R:Jumping to new memory address\n");
+            chip8->PC = chip8->inst.NNN;
+            break;
+
         case 0x02:
             printf("R:Returned from subroutine\n");
             //Call Subroutine
@@ -304,6 +309,12 @@ void emulate_instruction(sdl_t *sdl,chip8_t *chip8, const config_t *config){
         case 0x06:
             printf("R:Set V to NN\n");
             chip8->V[chip8->inst.X] = chip8->inst.NN;
+            break;
+
+        case 0x07:
+            printf("R:Set V to += NN\n");
+            chip8->V[chip8->inst.X] += chip8->inst.NN;
+            break;
             break;
 
         case 0x0D:
