@@ -204,6 +204,10 @@ void update_screen(sdl_t sdl,const chip8_t chip8,const config_t config) {
             //Pixel is on draw foreground
             SDL_SetRenderDrawColor(sdl.renderer,fr,fg,fb,fa);
             SDL_RenderFillRect(sdl.renderer,&rect);
+
+            //Adds pixelated effect
+            SDL_SetRenderDrawColor(sdl.renderer, br, bg, bb, ba);
+            SDL_RenderDrawRect(sdl.renderer, &rect);
         }else {
             //Pixel is Off
             SDL_SetRenderDrawColor(sdl.renderer, br, bg, bb, ba);
