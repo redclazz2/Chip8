@@ -3,7 +3,7 @@
 
 using namespace std;
 
-display::display()
+Display::Display()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -11,7 +11,7 @@ display::display()
     }
 }
 
-bool display::createWindow()
+bool Display::createWindow()
 {
     bool created = true;
 
@@ -26,14 +26,12 @@ bool display::createWindow()
     {
         fprintf(stderr, "Window failed to initialize", SDL_GetError());
         created = false;
-    }else{
-        cout << "Created the SDL window";
     }
 
     return created;
 }
 
-void display::destroyWindow()
+void Display::destroyWindow()
 {
     if (window != NULL)
     {

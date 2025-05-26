@@ -1,14 +1,21 @@
 cmake_minimum_required(VERSION 3.10.0)
-project(chip8 VERSION 0.1.0 LANGUAGES C CXX)
+project(chip8 VERSION 0.1.0 LANGUAGES CXX)
+set(CMAKE_CXX_COMPILER "/usr/bin/g++" CACHE STRING "" FORCE)
 
 #Tells cmake to find SDL3 in the system
 find_package(SDL3 REQUIRED CONFIG)
+
+include_directories(
+    ${SDL3_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/src
+)
 
 #Adds the source files that the executable uses
 add_executable(chip8
     src/main.cpp
     src/chip8/chip8.cpp
     src/display/display.cpp
+    src/input/input.cpp
 )
 
 #Links the library to the target

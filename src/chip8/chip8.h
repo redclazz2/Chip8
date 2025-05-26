@@ -1,16 +1,13 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include "display/display.h"
+#include "input/input.h"
 
-class chip8
+class Chip8
 {
 public:
-    chip8(display* dis)
-    {
-        display = dis;
-        // Copy the font to memory
-        std::copy(std::begin(font), std::end(font), memory + 0x050);
-    };
+    Chip8(Display* dis, Input* inp);
 
     uint8_t memory[4096];
     uint8_t font[80] = {
@@ -32,10 +29,12 @@ public:
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
 
-    display* display;
+    Display* display;
     bool displaySize[64 * 32];
     bool running = true;
 
-    bool init();
-    void update();
+    Input* input;
+
+    bool Init();
+    void Update();
 };
