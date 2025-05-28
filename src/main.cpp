@@ -9,17 +9,16 @@ int main()
     Input *in = new Input();
     Chip8 *em = new Chip8(dis, in);
 
-
     SDL_Event event;
 
-    if (!em->Init())
+    if (em->Init())
     {
-        dis->destroyWindow();
-        delete em;
-        delete dis;
+        em->Update();
     }
 
-    em->Update();
+    delete em;
+    delete dis;
+    delete in;
 
     return 0;
 }

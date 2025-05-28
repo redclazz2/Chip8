@@ -1,12 +1,19 @@
 #pragma once
 #include<SDL3/SDL.h>
+#include <vector>
 
 class Display{
     public:
-        int WIDTH = 800;
-        int HEIGHT = 600;
-        int DELAY = 3000;
+        int UPSCALE  = 10;
+        int WIDTH = 64 * UPSCALE;
+        int HEIGHT = 32 * UPSCALE;
+        int DELAY = 100;
+        
+        std::vector<uint8_t> data;
+        
         SDL_Window *window = NULL; 
+        SDL_Renderer *renderer = NULL;
+        SDL_Texture *texture = NULL;
 
         Display();
     

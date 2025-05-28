@@ -70,6 +70,6 @@ void Chip8::Update()
             cout << "C" << endl;
         }
 
-        //SDL_Delay(10);
+        display->updateWindow();
     }
 }

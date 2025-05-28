@@ -29,10 +29,9 @@ public:
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
     };
 
-    Display* display;
-    bool displaySize[64 * 32];
     bool running = true;
 
+    Display* display;
     Input* input;
 
     bool Init();
