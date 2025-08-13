@@ -3,6 +3,7 @@
 #include <string>
 #include "display/display.h"
 #include "input/input.h"
+#include <random>
 
 class Chip8
 {
@@ -14,10 +15,8 @@ public:
     uint16_t PC;
     uint16_t stack[16];
     uint8_t SP;
-
     uint8_t delayTimer;
     uint8_t soundTimer;
-
     uint8_t memory[4096];
     uint8_t font[80] = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -39,11 +38,15 @@ public:
     };
 
     bool running = true;
-
+    
+    std::default_random_engine randGen;
+	std::uniform_int_distribution<uint8_t> randByte;
+    
     Display* display;
     Input* input;
 
     bool Init();
-    void LoadROM(string rom);
+    bool LoadROM(std::string rom);
+
     void Update();
 };
