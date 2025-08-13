@@ -1,28 +1,27 @@
 #include "display.h"
 #include <iostream>
 #include <SDL3/SDL.h>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
 Display::Display()
 {
-    data.resize(WIDTH * HEIGHT * UPSCALE * UPSCALE);
-
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         cout << "Failed to initialize SDL";
     }
 }
 
-bool Display::createWindow()
+bool Display::init()
 {
     bool created = true;
 
-    // Create a window
     window = SDL_CreateWindow(
         "Red's Chip 8",
-        WIDTH,
-        HEIGHT,
+        WIDTH * UPSCALE,
+        HEIGHT * UPSCALE,
         0);
 
     if (window == NULL)
@@ -31,7 +30,6 @@ bool Display::createWindow()
         created = false;
     }
 
-    // Create a renderer
     renderer = SDL_CreateRenderer(
         window, NULL);
 
@@ -41,11 +39,10 @@ bool Display::createWindow()
         created = false;
     }
 
-    // Create a texture
     texture = SDL_CreateTexture(
         renderer,
         SDL_PIXELFORMAT_ARGB8888,
-        SDL_TEXTUREACCESS_STATIC, //Suitable for this use case
+        SDL_TEXTUREACCESS_STATIC,
         WIDTH,
         HEIGHT);
 
@@ -58,29 +55,52 @@ bool Display::createWindow()
     return created;
 }
 
-void Display::destroyWindow()
+void Display::destroy()
 {
     if (window != NULL)
     {
         SDL_DestroyWindow(window);
     }
 
-    if(renderer != NULL){
+    if (renderer != NULL)
+    {
         SDL_DestroyRenderer(renderer);
-    }
-
-    if(texture != NULL){
-        SDL_DestroyTexture(texture);
     }
 
     SDL_Quit();
 }
 
-void Display::updateWindow()
+void Display::update()
 {
-   SDL_UpdateTexture(texture, NULL, data.data(), WIDTH/8 * sizeof(uint8_t));
-   SDL_RenderClear(renderer);
-   SDL_RenderTexture(renderer, texture, NULL, NULL);
-   SDL_RenderPresent(renderer);
-   SDL_Delay(DELAY);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+    /*for (int n = 0; n < 5; ++n)
+    {
+        int rx = rand() % WIDTH;
+        int ry = rand() % HEIGHT;
+        data[rx][ry] = true;
+    }*/
+
+    for (int i = 0; i < WIDTH; i++)
+    {
+        for (int e = 0; e < HEIGHT; e++)
+        {
+            if (data[i][e])
+            {
+                SDL_FRect rect;
+                rect.x = i * UPSCALE;
+                rect.y = e * UPSCALE;
+
+                rect.w = UPSCALE;
+                rect.h = UPSCALE;
+
+                SDL_RenderFillRect(renderer, &rect);
+            }
+        }
+    }
+
+    SDL_RenderPresent(renderer);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_Delay(DELAY);
 }

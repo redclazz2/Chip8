@@ -5,11 +5,11 @@
 class Display{
     public:
         int UPSCALE  = 10;
-        int WIDTH = 64 * UPSCALE;
-        int HEIGHT = 32 * UPSCALE;
+        int WIDTH = 64;
+        int HEIGHT = 32;
         int DELAY = 100;
         
-        std::vector<uint8_t> data;
+        uint8_t data[64][32];
         
         SDL_Window *window = NULL; 
         SDL_Renderer *renderer = NULL;
@@ -17,7 +17,7 @@ class Display{
 
         Display();
     
-        bool createWindow();
-        void destroyWindow(); 
-        void updateWindow();
+        bool init();
+        void destroy(); 
+        void update();
 };

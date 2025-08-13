@@ -9,18 +9,21 @@ using namespace std;
 
 Chip8::Chip8(Display *dis, Input* inp): display(dis), input(inp)
 {
-    // Copy the font to memory
     std::copy(std::begin(font), std::end(font), memory + 0x050);
 }
 
 bool Chip8::Init()
 {
-    if (!display->createWindow())
+    if (!display->init())
     {
         return false;
     }
 
     return true;
+}
+
+void Chip8::LoadROM(string rom){
+    cout << rom;
 }
 
 void Chip8::Update()
@@ -31,7 +34,19 @@ void Chip8::Update()
 
         if(keyboard["EXIT"]){
             running = false;
-            display->destroyWindow();
+            display->destroy();
+        }
+
+        if(keyboard["1"]){
+            cout << "1" << endl;
+        }
+
+        if(keyboard["2"]){
+            cout << "2" << endl;
+        }
+
+        if(keyboard["3"]){
+            cout << "3" << endl;
         }
 
         if(keyboard["Q"]){
@@ -70,6 +85,6 @@ void Chip8::Update()
             cout << "C" << endl;
         }
 
-        display->updateWindow();
+        display->update();
     }
 }

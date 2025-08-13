@@ -28,7 +28,7 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
 #When this file is set up, we create a build folder
-#and inside we run cdmake {target to this file}
+#and inside we run: cdmake {target to this file}
 #that builds native files.
 
 #Since I'm on linux, the file generated will be a Makefile,
