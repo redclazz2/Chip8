@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <chrono>
 #include <random>
+#include <thread>
+#include <unistd.h>
 
 using namespace std;
 
@@ -19,18 +21,25 @@ Chip8::Chip8(Display *dis, Input *inp) : display(dis), input(inp), randGen(std::
 
 bool Chip8::Init()
 {
-    if (!Chip8::LoadROM("../roms/ProgEmulatorLogo.ch8"))
+    if (!Chip8::LoadROM("../roms/IBMLogo.ch8"))
     {
         return false;
-    }else{
+    }
+    else
+    {
         cout << "ROM Loaded." << endl;
+        DumpMemoryFromProgramStart();
     }
 
     if (!display->init())
     {
         return false;
-    }else{
+    }
+    else
+    {
+        memset(display->data, 1, sizeof(display->data));
         cout << "Display Initialized." << endl;
+        display->update();
     }
 
     return true;
@@ -44,8 +53,8 @@ bool Chip8::LoadROM(string rom)
 
         if (file.is_open())
         {
-            file.seekg(SEEK_END);
-            streampos size = file.tellg();
+            file.seekg(std::ios::end);
+            streamsize size = file.tellg();
             file.seekg(0);
 
             char *buffer = new char[size];
@@ -78,6 +87,56 @@ void Chip8::Update()
     while (running)
     {
         map<string, bool> keyboard = input->getKeyboardStatus();
+
+        uint16_t instruction = (memory[PC] << 8u) | memory[PC + 1];
+        PC += 2;
+
+        //  ---1---   ---2---  -> In bytes
+        // 1010 0000 0000 0000 -> Writen in binary
+        //  -1-  -2-  -3-  -4-   -> Nibbles
+        uint8_t firstNibble = (instruction & 0xF000) >> 12;
+        uint8_t X = (instruction & 0x0F00) >> 8;
+        uint8_t Y = (instruction & 0x00F0) >> 4;
+        uint8_t N = (instruction & 0x000F);
+
+        uint8_t NN = (instruction & 0x00FF);
+        uint16_t NNN = (instruction & 0x0FFF);
+
+        switch (firstNibble)
+        {
+        case 0:
+            switch (instruction)
+            {
+            case 0x00E0:
+                cout << "Clear Screen Instruction" << endl;
+                memset(display->data, 0, sizeof(display->data));
+                break;
+
+            case 0x00EE:
+                cout << "Return from subroutine" << endl;
+                SP--;
+                PC = stack[SP];
+                
+                break;
+            }
+            break;
+
+        case 1:
+            cout << "Jump" << endl;
+            PC = NNN;
+            break;
+
+
+        case 2:  
+            cout << "Go to routine" << endl;
+            stack[SP] = PC;
+            SP++;    
+
+            PC = NNN;
+            break;
+        }
+
+
 
         if (keyboard["EXIT"])
         {
@@ -146,5 +205,28 @@ void Chip8::Update()
         }
 
         display->update();
+
+        sleep(2);
     }
+}
+
+void Chip8::DumpMemoryFromProgramStart()
+{
+    constexpr std::size_t PROGRAM_START = 0x200;
+    constexpr std::size_t MEMORY_SIZE = sizeof(memory);
+
+    for (std::size_t addr = PROGRAM_START; addr < MEMORY_SIZE; addr += 16)
+    {
+        std::cout << std::hex << std::setw(4) << std::setfill('0') << addr << ": ";
+
+        for (std::size_t i = 0; i < 16 && (addr + i) < MEMORY_SIZE; i++)
+        {
+            std::cout << std::hex << std::setw(2) << std::setfill('0')
+                      << static_cast<int>(memory[addr + i]) << " ";
+        }
+
+        std::cout << "\n";
+    }
+
+    std::cout << std::dec; // back to decimal
 }

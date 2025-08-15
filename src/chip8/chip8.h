@@ -47,6 +47,6 @@ public:
 
     bool Init();
     bool LoadROM(std::string rom);
-
+    void DumpMemoryFromProgramStart();
     void Update();
 };

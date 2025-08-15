@@ -21,7 +21,7 @@
       ],
       "environment": [
         { "name": "SDL_VIDEODRIVER", "value": "x11" },
-        { "name": "SDL_AUDIODRIVER", "value": "alsa" } // optional, if you use audio
+        { "name": "SDL_AUDIODRIVER", "value": "alsa" }
       ]
     }
   ]
