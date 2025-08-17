@@ -102,5 +102,5 @@ void Display::update()
 
     SDL_RenderPresent(renderer);
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_Delay(DELAY);
+    //SDL_Delay(DELAY);
 }

@@ -53,9 +53,9 @@ bool Chip8::LoadROM(string rom)
 
         if (file.is_open())
         {
-            file.seekg(std::ios::end);
-            streamsize size = file.tellg();
-            file.seekg(0);
+            file.seekg(0, std::ios::end);
+            std::streampos size = file.tellg();
+            file.seekg(0, std::ios::beg);
 
             char *buffer = new char[size];
             file.read(buffer, size);
@@ -108,6 +108,7 @@ void Chip8::Update()
             switch (instruction)
             {
             case 0x00E0:
+                cout << "Clear screen instruction" << endl;
                 memset(display->data, 0, sizeof(display->data));
                 break;
 
@@ -122,9 +123,9 @@ void Chip8::Update()
             PC = NNN;
             break;
 
-        case 2:  
+        case 2:
             stack[SP] = PC;
-            SP++;    
+            SP++;
 
             PC = NNN;
             break;
@@ -142,17 +143,41 @@ void Chip8::Update()
             break;
 
         case 0xD:
+        {
+            cout << "Display Instruction" << endl;
             uint8_t pX = V[X] % display->WIDTH;
             uint8_t pY = V[Y] % display->HEIGHT;
-            
+
             V[0xF] = 0;
 
-            for(int i = 0; i < N; i++){
-                uint8_t spriteData = memory[I];
-            }
+            for (int i = 0; i < N; i++) //Heigh
+            {
+                uint8_t sByte = memory[I + i];
+                for (int e = 0; e < 8; e++) //Width
+                {
+                    uint8_t sBit = sByte & (0x80 >> e);
 
+                    if (sBit)
+                    {
+                        if (display->data[pX + e][pY + i])
+                        {
+                            display->data[pX + e][pY + i] = 0;
+                            V[0xF] = 1;
+                        }else{
+                            display->data[pX + e][pY + i] ^= sBit;
+                        }
+                    }
+                }
+            }
             break;
         }
+
+        default:
+            cout << "No suitable instruction found: " << firstNibble << endl;
+            break;
+        }
+
+        display->update();
 
         if (keyboard["EXIT"])
         {
@@ -220,9 +245,7 @@ void Chip8::Update()
             cout << "C" << endl;
         }
 
-        display->update();
-
-        sleep(2);
+        sleep(0.6);
     }
 }
 
