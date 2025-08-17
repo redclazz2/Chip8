@@ -108,35 +108,51 @@ void Chip8::Update()
             switch (instruction)
             {
             case 0x00E0:
-                cout << "Clear Screen Instruction" << endl;
                 memset(display->data, 0, sizeof(display->data));
                 break;
 
             case 0x00EE:
-                cout << "Return from subroutine" << endl;
                 SP--;
                 PC = stack[SP];
-                
                 break;
             }
             break;
 
         case 1:
-            cout << "Jump" << endl;
             PC = NNN;
             break;
 
-
         case 2:  
-            cout << "Go to routine" << endl;
             stack[SP] = PC;
             SP++;    
 
             PC = NNN;
             break;
+
+        case 6:
+            V[X] = NN;
+            break;
+
+        case 7:
+            V[X] += NN;
+            break;
+
+        case 0xA:
+            I = NNN;
+            break;
+
+        case 0xD:
+            uint8_t pX = V[X] % display->WIDTH;
+            uint8_t pY = V[Y] % display->HEIGHT;
+            
+            V[0xF] = 0;
+
+            for(int i = 0; i < N; i++){
+                uint8_t spriteData = memory[I];
+            }
+
+            break;
         }
-
-
 
         if (keyboard["EXIT"])
         {
