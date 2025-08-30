@@ -21,7 +21,7 @@ Chip8::Chip8(Display *dis, Input *inp) : display(dis), input(inp), randGen(std::
 
 bool Chip8::Init()
 {
-    if (!Chip8::LoadROM("../roms/IBMLogo.ch8"))
+    if (!Chip8::LoadROM("../roms/3-corax+.ch8"))
     {
         return false;
     }
@@ -130,6 +130,27 @@ void Chip8::Update()
             PC = NNN;
             break;
 
+        case 3:
+            if (V[X] == NN)
+            {
+                PC += 2;
+            }
+            break;
+
+        case 4:
+            if (V[X] != NN)
+            {
+                PC += 2;
+            }
+            break;
+
+        case 5:
+            if (V[X] == V[Y])
+            {
+                PC += 2;
+            }
+            break;
+
         case 6:
             V[X] = NN;
             break;
@@ -138,8 +159,72 @@ void Chip8::Update()
             V[X] += NN;
             break;
 
+        // Logical and Arithmetic Instructions
+        case 8:
+
+            switch (N)
+            {
+            case 0:
+                V[X] = V[Y];
+                break;
+
+            case 1:
+                V[X] = V[X] | V[Y];
+                break;
+
+            case 2:
+                V[X] = V[X] & V[Y];
+                break;
+
+            case 3:
+                V[X] = V[X] ^ V[Y];
+                break;
+
+            case 4:
+            {
+                int sum = V[X] + V[Y];
+                V[0xF] = sum > 0xFF ? 1 : 0;
+                V[X] = sum;
+                break;
+            }
+
+            case 5:
+                V[0xF] = V[X] > V[Y] ? 1 : 0;
+                V[X] = V[X] - V[Y];
+                break;
+
+            case 6:
+                V[0xF] = V[X] & 0x01;
+                V[X] = V[X] >> 1;
+                break;
+
+            case 7:
+                V[0xF] = V[Y] > V[X] ? 1 : 0;
+                V[X] = V[Y] - V[X];
+                break;
+
+            case 0xE:
+                V[0xF] = (V[X] & 0x80) >> 7;
+                V[X] = V[X] << 1;
+                break;
+
+            default:
+                cout << "No suitable logic/arith opcode found: " << int(N) << endl;
+                break;
+            }
+
+            break;
+
         case 0xA:
             I = NNN;
+            break;
+
+        case 0xB:
+            PC = NNN + V[0];
+            break;
+
+        case 0xC:
+            V[X] = NN & randByte(randGen);
             break;
 
         case 0xD:
@@ -150,10 +235,10 @@ void Chip8::Update()
 
             V[0xF] = 0;
 
-            for (int i = 0; i < N; i++) //Heigh
+            for (int i = 0; i < N; i++) // Heigh
             {
                 uint8_t sByte = memory[I + i];
-                for (int e = 0; e < 8; e++) //Width
+                for (int e = 0; e < 8; e++) // Width
                 {
                     uint8_t sBit = sByte & (0x80 >> e);
 
@@ -163,7 +248,9 @@ void Chip8::Update()
                         {
                             display->data[pX + e][pY + i] = 0;
                             V[0xF] = 1;
-                        }else{
+                        }
+                        else
+                        {
                             display->data[pX + e][pY + i] ^= sBit;
                         }
                     }
@@ -172,8 +259,10 @@ void Chip8::Update()
             break;
         }
 
+        //Continue with E ... 
+
         default:
-            cout << "No suitable instruction found: " << firstNibble << endl;
+            cout << "No suitable opcode found: " << int(firstNibble) << endl;
             break;
         }
 
@@ -245,7 +334,7 @@ void Chip8::Update()
             cout << "C" << endl;
         }
 
-        sleep(0.6);
+        std::this_thread::sleep_for(std::chrono::milliseconds(7));
     }
 }
 

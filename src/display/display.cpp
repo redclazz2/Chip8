@@ -39,19 +39,6 @@ bool Display::init()
         created = false;
     }
 
-    texture = SDL_CreateTexture(
-        renderer,
-        SDL_PIXELFORMAT_ARGB8888,
-        SDL_TEXTUREACCESS_STATIC,
-        WIDTH,
-        HEIGHT);
-
-    if (texture == NULL)
-    {
-        fprintf(stderr, "Unable to create texture %s\n", SDL_GetError());
-        created = false;
-    }
-
     return created;
 }
 
@@ -73,14 +60,7 @@ void Display::destroy()
 void Display::update()
 {
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-    /*for (int n = 0; n < 5; ++n)
-    {
-        int rx = rand() % WIDTH;
-        int ry = rand() % HEIGHT;
-        data[rx][ry] = true;
-    }*/
+    SDL_SetRenderDrawColor(renderer, 160, 160, 139, 0xFF);
 
     for (int i = 0; i < WIDTH; i++)
     {
@@ -101,6 +81,5 @@ void Display::update()
     }
 
     SDL_RenderPresent(renderer);
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-    //SDL_Delay(DELAY);
+    SDL_SetRenderDrawColor(renderer, 33, 30, 32, 0xFF);
 }
