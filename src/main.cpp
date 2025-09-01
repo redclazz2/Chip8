@@ -10,7 +10,33 @@ int main()
 
     if (em->Init())
     {
-        em->Update();
+        const int CPU_HZ = 500;
+        const int TIMER_HZ = 60;
+
+        const Uint32 CPU_INTERVAL = 1000 / CPU_HZ;
+        const Uint32 TIMER_INTERVAL = 1000 / TIMER_HZ;
+
+        Uint32 lastCpuTick = SDL_GetTicks();
+        Uint32 lastTimerTick = SDL_GetTicks();
+
+        while (em->running)
+        {
+            Uint32 now = SDL_GetTicks();
+
+            if (now - lastCpuTick >= CPU_INTERVAL)
+            {
+                em->Update(); 
+                lastCpuTick = now;
+            }
+
+            if (now - lastTimerTick >= TIMER_INTERVAL)
+            {
+                em->UpdateTimers();
+                lastTimerTick = now;
+            }
+
+            //SDL_Delay(1);
+        }
     }
     
     delete em;
@@ -18,6 +44,5 @@ int main()
     delete in;
 
     SDL_Quit();
-
     return 0;
 }

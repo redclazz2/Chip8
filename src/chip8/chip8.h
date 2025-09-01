@@ -49,4 +49,5 @@ public:
     bool LoadROM(std::string rom);
     void DumpMemoryFromProgramStart();
     void Update();
+    void UpdateTimers();
 };

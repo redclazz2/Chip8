@@ -9,4 +9,5 @@ class Input{
         std::map<std::string, bool>  keyboard;
     public:
         std::map<std::string,bool> getKeyboardStatus();
+        std::array<bool, 16> getChipKeyboard(std::map<std::string,bool> sdlInput);
 };
